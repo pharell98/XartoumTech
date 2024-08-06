@@ -1,4 +1,4 @@
-abstract class BaseService {
+class BaseService {
     constructor(model) {
         this.model = model;
     }

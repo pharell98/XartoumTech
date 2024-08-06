@@ -1,5 +1,5 @@
 import { sendResponse } from '../utils/response.js';
-abstract class BaseController {
+class BaseController {
     constructor(service) {
         this.service = service;
     }
