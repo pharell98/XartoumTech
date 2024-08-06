@@ -1,12 +1,8 @@
-Documentation Complète pour l'Architecture du Projet KhartoumTech
-Introduction
+Architecture du Projet KhartoumTech
 
-XartoumTech est une application backend construite avec Node.
-js, Express, Mongoose pour MongoDB, et JWT pour l'authentification.
-L'architecture respecte les principes SOLID et la programmation orientée objet (POO) pour assurer une structure modulaire,
-maintenable et extensible.
-
-XartoumTech/
+KhartoumTech est une application backend construite avec Node.js, Express, Mongoose pour MongoDB, et JWT pour l'authentification.
+L'architecture respecte les principes SOLID et la programmation orientée objet (POO) pour assurer une structure modulaire, maintenable et extensible.
+KhartoumTech/
 ├── controllers/
 │   ├── BaseController.js
 │   ├── AuthController.js
@@ -18,14 +14,14 @@ XartoumTech/
 │   ├── TelechargementController.js
 │   └── UserController.js
 ├── middlewares/
-│   ├── AuthMiddleware.js  // Ce middleware vérifie si une requête contient un token JWT valide.
-│   ├── ErrorMiddleware.js   //Ce middleware gère les erreurs globales dans l'application.
-│   └── ValidationMiddleware.js  // Ce middleware vérifie les erreurs de validation des requêtes.
+│   ├── AuthMiddleware.js
+│   ├── ErrorMiddleware.js
+│   └── ValidationMiddleware.js
 ├── models/
 │   ├── Comment.js
 │   ├── Evaluation.js
 │   ├── Like.js
-│   ├── Model.js
+│   ├── Post.js
 │   ├── Partage.js
 │   ├── Telechargement.js
 │   └── User.js
@@ -56,7 +52,6 @@ XartoumTech/
 ├── app.js
 ├── .env
 └── server.js
-
 Détails des Fichiers
 Controllers
 
