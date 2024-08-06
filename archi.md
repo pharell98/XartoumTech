@@ -8,46 +8,58 @@ maintenable et extensible.
 
 XartoumTech/
 ├── controllers/
+│   └── RegisterController.js
 │   ├── BaseController.js
-│   ├── AuthController.js
 │   ├── CommentController.js
-│   ├── EvaluationController.js
-│   ├── LikeController.js
-│   ├── ModelController.js
+│   ├── VoteController.js
+│   ├── LikesController.js
+│   ├── PostController.js
 │   ├── PartageController.js
 │   ├── TelechargementController.js
-│   └── UserController.js
+│   └── UtilisateurController.js
+│   └── CommandeController.js
+│   └── DiscussionsController.js
 ├── middlewares/
 │   ├── AuthMiddleware.js  // Ce middleware vérifie si une requête contient un token JWT valide.
 │   ├── ErrorMiddleware.js   //Ce middleware gère les erreurs globales dans l'application.
 │   └── ValidationMiddleware.js  // Ce middleware vérifie les erreurs de validation des requêtes.
 ├── models/
+│   └── Register.js
 │   ├── Comment.js
-│   ├── Evaluation.js
-│   ├── Like.js
-│   ├── Model.js
+│   ├── Vote.js
+│   ├── Likes.js
 │   ├── Partage.js
 │   ├── Telechargement.js
-│   └── User.js
+│   └── Utilisateur.js
+│   └── Commande.js
+│   └── Post.js
+│   └── Canal.js
+│   └── Discussions.js
 ├── routes/
-│   ├── authRoutes.js
 │   ├── commentRoutes.js
-│   ├── evaluationRoutes.js
-│   ├── likeRoutes.js
-│   ├── modelRoutes.js
+│   ├── voteRoutes.js
+│   ├── likesRoutes.js
+│   ├── postRoutes.js
 │   ├── partageRoutes.js
 │   ├── telechargementRoutes.js
-│   └── userRoutes.js
+│   └── utilisateurRoutes.js
+│   └── commandeRoutes.js
+│   └── discussionsRoutes.js
+│   └── canalRoutes.js
+│   └── registerRoutes.js
 ├── services/
 │   ├── BaseService.js
-│   ├── AuthService.js
 │   ├── CommentService.js
-│   ├── EvaluationService.js
-│   ├── LikeService.js
-│   ├── ModelService.js
+│   ├── VoteService.js
+│   ├── LikesService.js
+│   ├── PostService.js
 │   ├── PartageService.js
 │   ├── TelechargementService.js
-│   └── UserService.js
+│   └── UtilisateurService.js
+│   └── DiscussionsService.js
+│   └── CommandeService.js
+│   └── RegisterService
+│   └── CanalService.js
 ├── utils/
 │   ├── database.js
 │   ├── response.js
