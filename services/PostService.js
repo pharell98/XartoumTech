@@ -40,9 +40,19 @@ class PostService extends BaseService {
             if (!post) {
                 throw new Error('Post non trouvé');
             }
-            if (!post.likes.includes(userId)) {
+
+            // Enlever le dislike si l'utilisateur a déjà disliké
+            if (post.dislikes.includes(userId)) {
+                post.dislikes = post.dislikes.filter(id => id.toString() !== userId);
+            }
+
+            // Enlever le like si l'utilisateur a déjà liké
+            if (post.likes.includes(userId)) {
+                post.likes = post.likes.filter(id => id.toString() !== userId);
+            } else {
                 post.likes.push(userId);
             }
+
             return await post.save();
         } catch (err) {
             console.error('Erreur dans PostService.likePost:', err);
@@ -56,9 +66,19 @@ class PostService extends BaseService {
             if (!post) {
                 throw new Error('Post non trouvé');
             }
-            if (!post.dislikes.includes(userId)) {
+
+            // Enlever le like si l'utilisateur a déjà liké
+            if (post.likes.includes(userId)) {
+                post.likes = post.likes.filter(id => id.toString() !== userId);
+            }
+
+            // Enlever le dislike si l'utilisateur a déjà disliké
+            if (post.dislikes.includes(userId)) {
+                post.dislikes = post.dislikes.filter(id => id.toString() !== userId);
+            } else {
                 post.dislikes.push(userId);
             }
+
             return await post.save();
         } catch (err) {
             console.error('Erreur dans PostService.dislikePost:', err);
