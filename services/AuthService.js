@@ -2,7 +2,6 @@ import BaseService from './BaseService.js';
 import Utilisateur from '../models/Utilisateur.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwt.js';
-import { sendResponse } from '../utils/response.js';
 
 class AuthService extends BaseService {
     constructor() {
@@ -11,7 +10,7 @@ class AuthService extends BaseService {
 
     async register(profileData) {
         try {
-         //   console.log('Tentative d\'enregistrement avec le profil:', profileData);
+            //   console.log('Tentative d\'enregistrement avec le profil:', profileData);
             const utilisateur = new this.model({ profile: profileData });
             await utilisateur.save();
         } catch (err) {

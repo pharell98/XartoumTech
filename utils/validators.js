@@ -19,3 +19,9 @@ export const loginValidationRules = () => {
         check('motDePasse').notEmpty().withMessage('Le mot de passe est requis')
     ];
 };
+
+export const discussionsValidationRules = () => {
+    return [
+        check('contenu').notEmpty().withMessage('contnu est requis'),
+    ];
+};
