@@ -1,6 +1,7 @@
 import BaseController from './BaseController.js';
 import AuthService from '../services/AuthService.js';
 import { sendResponse } from '../utils/response.js';
+import { generateToken } from '../utils/jwt.js';
 
 class AuthController extends BaseController {
     constructor() {
@@ -10,8 +11,9 @@ class AuthController extends BaseController {
     async register(req, res) {
         try {
             console.log('Données reçues pour l\'enregistrement:', req.body);
-            await this.service.register(req.body.profile);  // Appelle le service d'enregistrement
-            sendResponse(res, 201, { message: 'Enregistrement réussi' });  // Envoie uniquement un message de confirmation
+            const utilisateur = await this.service.register(req.body.profile);  // Appelle le service d'enregistrement
+            const token = generateToken(utilisateur);  // Génère le token JWT
+            sendResponse(res, 201, { message: 'Enregistrement réussi', utilisateur, token });  // Envoie les données de l'utilisateur et le token
         } catch (err) {
             console.error('Erreur lors de l\'enregistrement:', err);
             if (err.code === 11000) {

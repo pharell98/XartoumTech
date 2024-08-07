@@ -11,10 +11,7 @@ const connectDB = async () => {
         // Afficher la chaîne de connexion pour le débogage
         console.log('MongoDB URI:', mongoURI);
 
-        await mongoose.connect(mongoURI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(mongoURI);
         console.log('MongoDB connected');
     } catch (err) {
         console.error('Error connecting to MongoDB:', err.message);
