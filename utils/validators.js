@@ -19,3 +19,19 @@ export const loginValidationRules = () => {
         check('motDePasse').notEmpty().withMessage('Le mot de passe est requis')
     ];
 };
+
+export const serviceValidationRules = () => {
+    return [
+        check('type')
+            .notEmpty()
+            .withMessage('Le type est requis')
+            .isIn(['modele_pret', 'commande_sur_mesure', 'reparation'])
+            .withMessage('Type de service invalide.'),
+        check('nom').notEmpty().withMessage('Le nom est requis'),
+        check('description').notEmpty().withMessage('La description est requise'),
+        check('prixBase').isNumeric().withMessage('Le prix de base doit être un nombre'),
+        check('urlImage').isArray().withMessage('L\'URL de l\'image doit être un tableau de chaînes de caractères'),
+        check('urlImage.*').isString().withMessage('Chaque URL d\'image doit être une chaîne de caractères'),
+        check('stock').optional().isNumeric().withMessage('Le stock doit être un nombre')
+    ];
+};

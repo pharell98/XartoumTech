@@ -1,8 +1,9 @@
 import express from 'express';
 import connectDB from './utils/database.js';
 import authRoutes from './routes/authRoutes.js';
+
+import servicesRoutes from './routes/ServicesRoute.js';
 /*
-import userRoutes from './routes/userRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 import evaluationRoutes from './routes/evaluationRoutes.js';
 import likeRoutes from './routes/likeRoutes.js';
@@ -21,7 +22,7 @@ app.use(express.json());
 
 // Routes publiques
 app.use('/auth', authRoutes);
-
+app.use('/services', servicesRoutes);
 // Middleware d'authentification
 app.use(AuthMiddleware.verify);
 /*
