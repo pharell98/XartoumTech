@@ -8,12 +8,19 @@ const commentaireSchema = new Schema({
     timestamps: true
 });
 
+const fileSchema = new Schema({
+    type: { type: String, enum: ['image', 'video'], required: true },
+    url: { type: String, required: true }
+}, {
+    _id: false
+});
+
 // Schéma pour les posts
 const postSchema = new Schema({
     tailleurId: { type: Schema.Types.ObjectId, ref: 'Utilisateur' },
     titre: { type: String },
     description: { type: String, required: true },
-    urlImage: { type: String },
+    file: [fileSchema],
     vues: { type: Number, default: 0 },
     partages: { type: Number, default: 0 },
     likes: [{ type: Schema.Types.ObjectId, ref: 'Utilisateur' }],

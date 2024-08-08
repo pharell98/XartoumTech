@@ -10,10 +10,9 @@ class AuthController extends BaseController {
 
     async register(req, res) {
         try {
-            console.log('Données reçues pour l\'enregistrement:', req.body.profile);
             const utilisateur = await this.service.register(req.body.profile);
             const token = generateToken(utilisateur);
-            sendResponse(res, 201, {message: 'Enregistrement réussi', utilisateur, token});
+            sendResponse(res, 201, { message: 'Enregistrement réussi', utilisateur, token });
         } catch (err) {
             console.error('Erreur lors de l\'enregistrement:', err);
             if (err.code === 11000) {
@@ -26,16 +25,25 @@ class AuthController extends BaseController {
 
     async login(req, res) {
         try {
-            const {login, motDePasse} = req.body;
-            const {utilisateur, token} = await this.service.login(login, motDePasse);
-            sendResponse(res, 200, {utilisateur, token});
+            const { login, motDePasse } = req.body;
+            const { utilisateur, token } = await this.service.login(login, motDePasse);
+            sendResponse(res, 200, { utilisateur, token });
         } catch (err) {
             console.error('Erreur lors de la connexion:', err);
             sendResponse(res, 401, {message: err.message});
         }
     }
 
-
+    async updateSolde(req, res) {
+        try {
+            const { solde } = req.body;
+            const utilisateur = await this.service.updateSolde(req.user.id, solde);
+            sendResponse(res, 200, { message: 'Solde mis à jour avec succès', utilisateur });
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour du solde:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne', error: err.message });
+        }
+    }
 }
 
 export default new AuthController();

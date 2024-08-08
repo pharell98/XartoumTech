@@ -1,34 +1,26 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-// Schéma de base pour les mesures spécifiques aux hommes
-const mesureHommeSchema = new Schema({
-    nom: { type: String },
-    poitrine: { type: Number },
-    taille: { type: Number },
-    hanches: { type: Number },
-    hauteur: { type: Number },
-    cou: { type: Number },
-    epaules: { type: Number },
-    longueurManche: { type: Number },
-    longueurPantalon: { type: Number },
-    tourCeinture: { type: Number }
-}, { _id: false });
-
-// Schéma de base pour les mesures spécifiques aux femmes
-const mesureFemmeSchema = new Schema({
-    nom: { type: String },
-    sousPoitrine: { type: Number },
-    tourDeBuste: { type: Number },
-    longueurRobe: { type: Number }
-}, { _id: false });
-
-// Schéma de base pour les mesures spécifiques aux enfants
-const mesureEnfantSchema = new Schema({
-    nom: { type: String },
-    longueurBras: { type: Number },
-    longueurJambe: { type: Number }
-}, { _id: false });
+const mesureSchema = new Schema({
+    nom: { type: String, unique: true },
+    type: { type: String, enum: ['Homme', 'Femme', 'Enfant'] },
+    valeurs: {
+      poitrine: { type: Number },
+      taille: { type: Number },
+      hanches: { type: Number },
+      hauteur: { type: Number },
+      cou: { type: Number },
+      epaules: { type: Number },
+      longueurManche: { type: Number },
+      longueurPantalon: { type: Number },
+      tourCeinture: { type: Number },
+      sousPoitrine: { type: Number },
+      tourDeBuste: { type: Number },
+      longueurRobe: { type: Number },
+      longueurBras: { type: Number },
+      longueurJambe: { type: Number }
+    }
+}, { timestamps: true });
 
 // Schéma pour le profil des utilisateurs
 const profileSchema = new Schema({
@@ -41,6 +33,7 @@ const profileSchema = new Schema({
     email: { type: String, required: true, unique: true },
     telephone: { type: String, required: true },
     aPropos: { type: String },
+    stateProfiles: { type: String, enum: ['normal', 'signaler'], default: 'normal' },
     sexe: { type: String, enum: ['Homme', 'Femme'], default: 'Homme' }
 }, { _id: false });  // Important: _id: false pour éviter un ID distinct
 
@@ -52,12 +45,11 @@ const utilisateurSchema = new Schema({
     evaluations: [{ type: Schema.Types.ObjectId, ref: 'Evaluation' }],
     services: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
     favoris: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
-    mesMesures: {
-        homme: { type: mesureHommeSchema, default: () => ({}) },
-        femme: { type: mesureFemmeSchema, default: () => ({}) },
-        enfant: { type: mesureEnfantSchema, default: () => ({}) }
-    },
-    exigences: { type: String }
+    mesMesures: [mesureSchema],
+    signalementsCount: { type: Number, default: 0 }, // Ajout du champ pour suivre le nombre de signalements
+    solde: { type: Number, default: 0 },
+    postsGratuits: { type: Number, default: 0 },
+    postsGratuitsQuotidiens: { type: Date, default: Date.now }
 }, { timestamps: true });
 
 // Hook pour hacher le mot de passe avant de sauvegarder

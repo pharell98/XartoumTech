@@ -10,13 +10,16 @@ class AuthService extends BaseService {
 
     async register(profileData) {
         try {
+            // Initialiser profile avec des valeurs par défaut correctes
             const utilisateurData = {
-                profile: profileData,
+                profile: {
+                    ...profileData,
+                    sexe: profileData.sexe || 'Homme'  // Valeur par défaut pour sexe
+                },
                 mesMesures: {
                     commune: profileData.mesMesures?.commune || {},
                     homme: profileData.mesMesures?.homme || {},
-                    femme: profileData.mesMesures?.femme || {},
-                    enfant: profileData.mesMesures?.enfant || {}
+                    femme: profileData.mesMesures?.femme || {}
                 }
             };
 
@@ -49,6 +52,21 @@ class AuthService extends BaseService {
         }
     }
 
+    async updateSolde(userId, solde) {
+        try {
+            const utilisateur = await this.model.findById(userId);
+            if (!utilisateur) {
+                throw new Error('Utilisateur non trouvé');
+            }
+
+            utilisateur.solde = solde;
+            await utilisateur.save();
+            return utilisateur;
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour du solde:', err);
+            throw err;
+        }
+    }
 }
 
 export default new AuthService();
