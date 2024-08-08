@@ -19,11 +19,13 @@ export const loginValidationRules = () => {
         check('motDePasse').notEmpty().withMessage('Le mot de passe est requis')
     ];
 };
+
 export const discussionsValidationRules = () => {
     return [
-        check('contenu').notEmpty().withMessage('contnu est requis'),
+        check('contenu').notEmpty().withMessage('Le contenu est requis'),
     ];
 };
+
 export const serviceValidationRules = () => {
     return [
         check('type')
@@ -64,5 +66,17 @@ export const commentValidationRules = () => {
 export const likeValidationRules = () => {
     return [
         check('userId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide')
+    ];
+};
+
+export const signalementValidationRules = () => {
+    return [
+        check('idUtilisateurSignale').isMongoId().withMessage('L\'utilisateur signalé est requis et doit être un ObjectId valide'),
+        check('motif')
+            .notEmpty()
+            .withMessage('Le motif est requis')
+            .isIn(['Contenu inapproprié', 'Harcèlement', 'Spam', 'Faux profil', 'Autre'])
+            .withMessage('Motif de signalement invalide.'),
+        check('description').optional().isString().withMessage('La description doit être une chaîne de caractères')
     ];
 };

@@ -5,6 +5,8 @@ import postRoutes from './routes/postRoutes.js';
 import servicesRoutes from './routes/ServicesRoute.js';
 import AuthMiddleware from './middlewares/AuthMiddleware.js';
 import discutionsRoutes from './routes/discutionsRoutes.js';
+import signalementRoutes from './routes/signalementRoutes.js';
+
 connectDB();
 
 const app = express();
@@ -22,5 +24,6 @@ app.use(AuthMiddleware.verify);
 app.use('/discussions', discutionsRoutes);
 app.use('/services', servicesRoutes);
 app.use('/posts', postRoutes);
+app.use('/signaler', signalementRoutes);
 
 export default app;
