@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import connectDB from './utils/database.js';
-import User from './models/Utilisateur.js';
+//import User from './models/Utilisateur.js';
+import Utilisateur from './models/Utilisateur.js';
 
 // Connectez-vous à la base de données
 connectDB();
-
+/*
 // Créez des utilisateurs fictifs
 const seedUsers = async () => {
     const users = [
@@ -58,3 +59,45 @@ const seedUsers = async () => {
 };
 
 seedUsers();
+*/
+
+const seedMesures = async (userId) => {
+    try {
+        await connectDB(); // Connectez-vous à la base de données
+
+        const utilisateur = await Utilisateur.findById(userId);
+
+        if (utilisateur) {
+            const { nom } = utilisateur.profile;
+            const mesures = {
+                Femme: {
+                    nom,
+                    poitrine: 90,
+                    taille: 75,
+                    hanches: 95,
+                    hauteur: 180,
+                    cou: 40,
+                    epaules: 50,
+                    longueurManche: 60,
+                    longueurPantalon: 100,
+                    tourCeinture: 85
+                },
+
+            };
+
+            utilisateur.mesMesures = mesures;
+            await utilisateur.save();
+            console.log('Mesures mises à jour avec succès pour l\'utilisateur:', utilisateur);
+        } else {
+            console.log('Utilisateur non trouvé');
+        }
+    } catch (err) {
+        console.error('Erreur lors de la mise à jour des mesures:', err);
+    } finally {
+        mongoose.connection.close();
+    }
+};
+
+// Remplacez 'votre_user_id' par l'ID de l'utilisateur que vous souhaitez mettre à jour
+const userId = '66b3ef98a8fc38b016174946';
+seedMesures(userId);

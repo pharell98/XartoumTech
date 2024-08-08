@@ -21,7 +21,6 @@ XartoumTech/
 │   └── DiscussionsController.js
 ├── middlewares/
 │   ├── AuthMiddleware.js  // Ce middleware vérifie si une requête contient un token JWT valide.
-│   ├── ErrorMiddleware.js   //Ce middleware gère les erreurs globales dans l'application.
 │   └── ValidationMiddleware.js  // Ce middleware vérifie les erreurs de validation des requêtes.
 ├── models/
 │   └── Register.js
