@@ -10,9 +10,19 @@ class AuthService extends BaseService {
 
     async register(profileData) {
         try {
-            //   console.log('Tentative d\'enregistrement avec le profil:', profileData);
-            const utilisateur = new this.model({ profile: profileData });
+            const utilisateurData = {
+                profile: profileData,
+                mesMesures: {
+                    commune: profileData.mesMesures?.commune || {},
+                    homme: profileData.mesMesures?.homme || {},
+                    femme: profileData.mesMesures?.femme || {},
+                    enfant: profileData.mesMesures?.enfant || {}
+                }
+            };
+
+            const utilisateur = new this.model(utilisateurData);
             await utilisateur.save();
+            return utilisateur;  // Assurez-vous de retourner l'utilisateur sauvegardé
         } catch (err) {
             console.error('Erreur lors de l\'enregistrement:', err);
             throw err;
@@ -21,7 +31,6 @@ class AuthService extends BaseService {
 
     async login(login, motDePasse) {
         try {
-            console.log('Tentative de connexion avec le login:', login);
             const utilisateur = await this.model.findOne({ 'profile.login': login });
             if (!utilisateur) {
                 throw new Error('Utilisateur non trouvé');
@@ -39,6 +48,7 @@ class AuthService extends BaseService {
             throw err;
         }
     }
+
 }
 
 export default new AuthService();
