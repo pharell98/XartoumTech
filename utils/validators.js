@@ -65,4 +65,20 @@ export const likeValidationRules = () => {
     return [
         check('userId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide')
     ];
-};
+}
+export const commandeValidationRules = () => {
+    return [
+        check('serviceId').isMongoId().withMessage('Le service est requis et doit être un ObjectId valide'),
+        check('quantite').isNumeric().withMessage('La quantité doit être un nombre'),
+        
+       
+    ];
+}
+export const evaluationValidationRules = () => {
+    return [
+      
+        
+        check('note').isNumeric().withMessage('La note doit être un nombre')
+    ];
+   
+}
