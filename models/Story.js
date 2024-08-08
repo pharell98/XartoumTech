@@ -10,6 +10,21 @@ const fileSchema = new Schema(
   }
 );
 
+const reactionSchema = new Schema({
+  utilisateurId: { type: Schema.Types.ObjectId, ref: "Utilisateur" },
+  reactionType: { type: String, enum: ["like", "emoji"], required: true },
+  emoji: { type: String }
+}, {
+  timestamps: true
+});
+
+const responseSchema = new Schema({
+  utilisateurId: { type: Schema.Types.ObjectId, ref: "Utilisateur" },
+  contenu: { type: String, required: true }
+}, {
+  timestamps: true
+});
+
 // Schéma pour les stories
 const storySchema = new Schema(
   {
@@ -18,7 +33,9 @@ const storySchema = new Schema(
     description: { type: String, required: true },
     file: [fileSchema],
     vues: { type: Number, default: 0 },
-    expiration: { type: Date, required: true }
+    expiration: { type: Date, required: true },
+    reactions: [reactionSchema],
+    responses: [responseSchema]
   },
   {
     timestamps: true,

@@ -1,10 +1,6 @@
 import BaseController from './BaseController.js';
 import StoryService from '../services/StoryService.js';
 import { sendResponse } from '../utils/response.js';
-import multer from 'multer';
-import fs from 'fs';
-
-const upload = multer({ dest: 'uploads/' });
 
 class StoryController extends BaseController {
     constructor() {
@@ -18,9 +14,6 @@ class StoryController extends BaseController {
             const expirationTime = 24 * 60 * 60 * 1000; // 24 heures en millisecondes
             storyData.expiration = new Date(Date.now() + expirationTime);
             const newStory = await this.service.createStory(storyData, filePath);
-            if (filePath) {
-                fs.unlinkSync(filePath);  // Supprime le fichier local après l'upload
-            }
             sendResponse(res, 201, newStory);
         } catch (err) {
             console.error('Erreur lors de la création de la story:', err);
@@ -36,6 +29,30 @@ class StoryController extends BaseController {
             sendResponse(res, 200, updatedStory);
         } catch (err) {
             console.error('Erreur lors de la vue de la story:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne' });
+        }
+    }
+
+    async addReaction(req, res) {
+        try {
+            const storyId = req.params.id;
+            const reactionData = req.body;
+            const updatedStory = await this.service.addReaction(storyId, reactionData);
+            sendResponse(res, 200, updatedStory);
+        } catch (err) {
+            console.error('Erreur lors de l\'ajout de la réaction:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne' });
+        }
+    }
+
+    async addResponse(req, res) {
+        try {
+            const storyId = req.params.id;
+            const responseData = req.body;
+            const updatedStory = await this.service.addResponse(storyId, responseData);
+            sendResponse(res, 200, updatedStory);
+        } catch (err) {
+            console.error('Erreur lors de l\'ajout de la réponse:', err);
             sendResponse(res, 500, { message: 'Erreur serveur interne' });
         }
     }
