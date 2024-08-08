@@ -19,7 +19,11 @@ export const loginValidationRules = () => {
         check('motDePasse').notEmpty().withMessage('Le mot de passe est requis')
     ];
 };
-
+export const discussionsValidationRules = () => {
+    return [
+        check('contenu').notEmpty().withMessage('contnu est requis'),
+    ];
+};
 export const serviceValidationRules = () => {
     return [
         check('type')
@@ -35,3 +39,32 @@ export const serviceValidationRules = () => {
         check('stock').optional().isNumeric().withMessage('Le stock doit être un nombre')
     ];
 };
+
+export const postValidationRules = () => {
+    return [
+        check('tailleurId').isMongoId().withMessage('Le tailleur est requis et doit être un ObjectId valide'),
+        check('description').notEmpty().withMessage('La description est requise')
+    ];
+};
+
+export const postUpdateValidationRules = () => {
+    return [
+        check('tailleurId').optional().isMongoId().withMessage('Le tailleur doit être un ObjectId valide'),
+        check('description').optional().notEmpty().withMessage('La description ne peut pas être vide')
+    ];
+};
+
+export const commentValidationRules = () => {
+    return [
+        check('utilisateurId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide'),
+        check('contenu').notEmpty().withMessage('Le contenu du commentaire est requis')
+    ];
+};
+
+export const likeValidationRules = () => {
+    return [
+        check('userId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide')
+    ];
+};
+
+
