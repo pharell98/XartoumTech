@@ -1,10 +1,7 @@
 import BaseController from './BaseController.js';
 import PostService from '../services/PostService.js';
 import { sendResponse } from '../utils/response.js';
-import multer from 'multer';
-import fs from 'fs';
-
-const upload = multer({ dest: 'uploads/' });
+import cloudinary from '../config/cloudinary.js';
 
 class PostController extends BaseController {
     constructor() {
@@ -15,10 +12,7 @@ class PostController extends BaseController {
         try {
             const postData = req.body;
             const filePath = req.file ? req.file.path : null;
-            const newPost = await this.service.createPost(postData, filePath);
-            if (filePath) {
-                fs.unlinkSync(filePath);  // Supprime le fichier local après l'upload
-            }
+            const newPost = await this.service.createPost(postData, filePath, req.user.id);
             sendResponse(res, 201, newPost);
         } catch (err) {
             console.error('Erreur lors de la création du post:', err);

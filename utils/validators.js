@@ -44,7 +44,6 @@ export const serviceValidationRules = () => {
 
 export const postValidationRules = () => {
     return [
-        check('tailleurId').isMongoId().withMessage('Le tailleur est requis et doit être un ObjectId valide'),
         check('description').notEmpty().withMessage('La description est requise'),
         check('type').isIn(['image', 'video']).withMessage('Le type doit être soit image, soit vidéo'),
         check('file.*.type').isIn(['image', 'video']).withMessage('Le type de fichier doit être soit image, soit vidéo'),
@@ -54,7 +53,6 @@ export const postValidationRules = () => {
 
 export const postUpdateValidationRules = () => {
     return [
-        check('tailleurId').optional().isMongoId().withMessage('Le tailleur doit être un ObjectId valide'),
         check('description').optional().notEmpty().withMessage('La description ne peut pas être vide')
     ];
 };
@@ -66,15 +64,10 @@ export const commentValidationRules = () => {
     ];
 };
 
-export const likeValidationRules = () => {
-    return [
-        check('userId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide')
-    ];
-};
+
 
 export const storyValidationRules = () => {
     return [
-        check('utilisateurId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide'),
         check('description').notEmpty().withMessage('La description est requise'),
         check('file.*.type').isIn(['image', 'video']).withMessage('Le type de fichier doit être soit image, soit vidéo'),
         check('file.*.url').isString().withMessage('L\'URL du fichier doit être une chaîne de caractères')

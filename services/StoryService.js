@@ -8,23 +8,23 @@ class StoryService extends BaseService {
         super(Story);
     }
 
-    async createStory(data, filePath) {
-        try {
-            if (filePath) {
-                const result = await cloudinary.uploader.upload(filePath, {
-                    folder: 'stories'
-                });
-                data.file = [{
-                    type: data.type,
-                    url: result.secure_url
-                }];
-            }
-            const story = new this.model(data);
-            return await story.save();
-        } catch (err) {
-            console.error('Erreur dans StoryService.createStory:', err);
-            throw err;
+    async createStory(data, filePath, userId) {
+        const expirationTime = 24 * 60 * 60 * 1000; // 24 heures en millisecondes
+        data.expiration = new Date(Date.now() + expirationTime);
+        data.utilisateurId = userId;
+
+        if (filePath) {
+            const result = await cloudinary.uploader.upload(filePath, {
+                folder: 'stories'
+            });
+            data.file = [{
+                type: data.type,
+                url: result.secure_url
+            }];
         }
+
+        const story = new this.model(data);
+        return await story.save();
     }
 
     async viewStory(storyId, userId) {
