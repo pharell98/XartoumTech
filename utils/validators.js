@@ -66,3 +66,5 @@ export const likeValidationRules = () => {
         check('userId').isMongoId().withMessage('L\'utilisateur est requis et doit être un ObjectId valide')
     ];
 };
+
+
