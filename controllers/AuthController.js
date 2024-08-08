@@ -33,6 +33,17 @@ class AuthController extends BaseController {
             sendResponse(res, 401, { message: err.message });
         }
     }
+
+    async updateSolde(req, res) {
+        try {
+            const { solde } = req.body;
+            const utilisateur = await this.service.updateSolde(req.user.id, solde);
+            sendResponse(res, 200, { message: 'Solde mis à jour avec succès', utilisateur });
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour du solde:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne', error: err.message });
+        }
+    }
 }
 
 export default new AuthController();

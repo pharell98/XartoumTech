@@ -51,6 +51,22 @@ class AuthService extends BaseService {
             throw err;
         }
     }
+
+    async updateSolde(userId, solde) {
+        try {
+            const utilisateur = await this.model.findById(userId);
+            if (!utilisateur) {
+                throw new Error('Utilisateur non trouvé');
+            }
+
+            utilisateur.solde = solde;
+            await utilisateur.save();
+            return utilisateur;
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour du solde:', err);
+            throw err;
+        }
+    }
 }
 
 export default new AuthService();
