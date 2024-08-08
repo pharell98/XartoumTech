@@ -73,3 +73,5 @@ export const storyValidationRules = () => {
         check('file.*.url').isString().withMessage('L\'URL du fichier doit être une chaîne de caractères')
     ];
 };
+
+
