@@ -1,17 +1,35 @@
 import BaseController from './BaseController.js';
 import PostService from '../services/PostService.js';
 import { sendResponse } from '../utils/response.js';
+import multer from 'multer';
+import fs from 'fs';
+
+const upload = multer({ dest: 'uploads/' });
 
 class PostController extends BaseController {
     constructor() {
         super(PostService);
     }
 
+    async create(req, res) {
+        try {
+            const postData = req.body;
+            const filePath = req.file ? req.file.path : null;
+            const newPost = await this.service.createPost(postData, filePath);
+            if (filePath) {
+                fs.unlinkSync(filePath);  // Supprime le fichier local après l'upload
+            }
+            sendResponse(res, 201, newPost);
+        } catch (err) {
+            console.error('Erreur lors de la création du post:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne' });
+        }
+    }
+
     async addComment(req, res) {
         try {
             const postId = req.params.id;
             const commentData = req.body;
-            console.log('Ajout d\'un commentaire au post:', postId, commentData);
             const updatedPost = await this.service.addComment(postId, commentData);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
@@ -24,7 +42,6 @@ class PostController extends BaseController {
         try {
             const postId = req.params.id;
             const commentId = req.params.commentId;
-            console.log('Suppression du commentaire:', commentId, 'du post:', postId);
             const updatedPost = await this.service.removeComment(postId, commentId);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
