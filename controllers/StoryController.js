@@ -30,22 +30,11 @@ class StoryController extends BaseController {
         }
     }
 
-    async view(req, res) {
-        try {
-            const storyId = req.params.id;
-            const userId = req.user._id;
-            const updatedStory = await this.service.viewStory(storyId, userId);
-            sendResponse(res, 200, updatedStory);
-        } catch (err) {
-            console.error('Erreur lors de la vue de la story:', err);
-            sendResponse(res, 500, { message: 'Erreur serveur interne' });
-        }
-    }
-
     async addReaction(req, res) {
         try {
             const storyId = req.params.id;
             const reactionData = req.body;
+            reactionData.utilisateurId = req.user.id;
             const updatedStory = await this.service.addReaction(storyId, reactionData);
             sendResponse(res, 200, updatedStory);
         } catch (err) {
@@ -58,10 +47,23 @@ class StoryController extends BaseController {
         try {
             const storyId = req.params.id;
             const responseData = req.body;
+            responseData.utilisateurId = req.user.id;
             const updatedStory = await this.service.addResponse(storyId, responseData);
             sendResponse(res, 200, updatedStory);
         } catch (err) {
             console.error('Erreur lors de l\'ajout de la réponse:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne' });
+        }
+    }
+
+    async removeResponse(req, res) {
+        try {
+            const storyId = req.params.id;
+            const responseId = req.params.responseId;
+            const updatedStory = await this.service.removeResponse(storyId, responseId, req.user.id);
+            sendResponse(res, 200, updatedStory);
+        } catch (err) {
+            console.error('Erreur lors de la suppression de la réponse:', err);
             sendResponse(res, 500, { message: 'Erreur serveur interne' });
         }
     }
