@@ -10,16 +10,15 @@ class AuthController extends BaseController {
 
     async register(req, res) {
         try {
-            const utilisateur = await this.service.register(req.body.profile);
+            const profileData = req.body.profile;
+            const filePath = req.file ? req.file.path : null;  // Récupérer le chemin du fichier
+
+            const utilisateur = await this.service.register(profileData, filePath);
             const token = generateToken(utilisateur);
             sendResponse(res, 201, { message: 'Enregistrement réussi', utilisateur, token });
         } catch (err) {
             console.error('Erreur lors de l\'enregistrement:', err);
-            if (err.code === 11000) {
-                sendResponse(res, 400, {message: 'Utilisateur déjà existant'});
-            } else {
-                sendResponse(res, 500, {message: 'Erreur serveur interne', error: err.message});
-            }
+            sendResponse(res, 500, { message: 'Erreur serveur interne', error: err.message });
         }
     }
 

@@ -2,27 +2,31 @@ import BaseService from './BaseService.js';
 import Utilisateur from '../models/Utilisateur.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwt.js';
+import cloudinary from '../config/cloudinary.js';
+
 
 class AuthService extends BaseService {
     constructor() {
         super(Utilisateur);
     }
 
-    async register(profileData) {
+    async register(profileData, filePath) {
         try {
+            // Vérifiez si un fichier est fourni pour l'upload
+            if (filePath) {
+                const result = await cloudinary.uploader.upload(filePath, {
+                    folder: 'profiles'
+                });
+                profileData.photo = result.secure_url; // Stocker l'URL de la photo dans le profil
+            }
+    
             // Initialiser profile avec des valeurs par défaut correctes
             const utilisateurData = {
                 profile: {
                     ...profileData,
-                    sexe: profileData.sexe || 'Homme'  // Valeur par défaut pour sexe
-                },
-                mesMesures: {
-                    commune: profileData.mesMesures?.commune || {},
-                    homme: profileData.mesMesures?.homme || {},
-                    femme: profileData.mesMesures?.femme || {}
                 }
             };
-
+    
             const utilisateur = new this.model(utilisateurData);
             await utilisateur.save();
             return utilisateur;  // Assurez-vous de retourner l'utilisateur sauvegardé

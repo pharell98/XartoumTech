@@ -8,6 +8,16 @@ class PostController extends BaseController {
         super(PostService);
     }
 
+    async findAll(req, res) {
+        try {
+            const posts = await this.service.findAllPosts(req.user.id);
+            sendResponse(res, 200, posts);
+        } catch (err) {
+            console.error('Erreur lors de la récupération des posts:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne' });
+        }
+    }
+
     async create(req, res) {
         try {
             const postData = req.body;

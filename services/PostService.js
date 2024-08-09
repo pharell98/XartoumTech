@@ -8,6 +8,19 @@ class PostService extends BaseService {
         super(Post);
     }
 
+    async findAllPosts(userId) {
+        const utilisateur = await Utilisateur.findById(userId);
+        if (!utilisateur) {
+            throw new Error('Utilisateur non trouvé');
+        }
+
+        const posts = await this.model.find({
+            tailleurId: { $nin: utilisateur.bloquer }
+        });
+
+        return posts;
+    }
+
     async createPost(data, filePath, userId) {
         // Récupérer l'utilisateur
         const utilisateur = await Utilisateur.findById(userId);

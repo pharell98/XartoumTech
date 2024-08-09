@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const mesureSchema = new Schema({
-    nom: { type: String, unique: true },
+    nom: { type: String , unique: true },  // Ajout de `required: true` pour éviter les valeurs nulles
     type: { type: String, enum: ['Homme', 'Femme', 'Enfant'] },
     valeurs: {
       poitrine: { type: Number },
@@ -22,8 +22,10 @@ const mesureSchema = new Schema({
     }
 }, { timestamps: true });
 
+
 // Schéma pour le profil des utilisateurs
 const profileSchema = new Schema({
+    photo: { type: String },
     nom: { type: String, required: true },
     prenom: { type: String, required: true },
     login: { type: String, required: true, unique: true },

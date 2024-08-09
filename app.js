@@ -10,6 +10,8 @@ import signalementRoutes from './routes/signalementRoutes.js';
 import commandeRoutes from './routes/commandeRoutes.js';
 import mesuresRoutes from './routes/mesuresRoutes.js';
 import bloquerRoutes from './routes/bloquerRoutes.js';
+import evaluationRoutes from './routes/evaluationRoutes.js';
+
 connectDB();
 const app = express();
 // Utilisez express.json() et express.urlencoded() pour analyser les corps des requêtes
@@ -29,5 +31,7 @@ app.use('/mesures', mesuresRoutes);
 app.use('/signaler', signalementRoutes);
 app.use('/commandes', commandeRoutes);
 app.use('/bloquer', bloquerRoutes);
+app.use('/evaluation', evaluationRoutes);
+
 
 export default app;
