@@ -7,7 +7,7 @@ import AuthMiddleware from './middlewares/AuthMiddleware.js';
 import discutionsRoutes from './routes/discutionsRoutes.js';
 import followRoutes from './routes/followRoutes.js';
 import signalementRoutes from './routes/signalementRoutes.js';
-
+import commandeRoutes from './routes/commandeRoutes.js';
 connectDB();
 
 const app = express();
@@ -28,4 +28,5 @@ app.use('/posts', postRoutes);
 app.use('/follows', followRoutes);
 app.use('/signaler', signalementRoutes);
 
+app.use('/commandes', commandeRoutes);
 export default app;

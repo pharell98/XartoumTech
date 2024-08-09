@@ -84,4 +84,20 @@ export const signalementValidationRules = () => {
             .withMessage('Motif de signalement invalide.'),
         check('description').optional().isString().withMessage('La description doit être une chaîne de caractères')
     ];
-};
+}
+export const commandeValidationRules = () => {
+    return [
+        check('serviceId').isMongoId().withMessage('Le service est requis et doit être un ObjectId valide'),
+        check('quantite').isNumeric().withMessage('La quantité doit être un nombre'),
+        
+       
+    ];
+}
+export const evaluationValidationRules = () => {
+    return [
+      
+        
+        check('note').isNumeric().withMessage('La note doit être un nombre')
+    ];
+   
+}
