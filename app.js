@@ -8,13 +8,11 @@ import discutionsRoutes from './routes/discutionsRoutes.js';
 import followRoutes from './routes/followRoutes.js';
 import signalementRoutes from './routes/signalementRoutes.js';
 import commandeRoutes from './routes/commandeRoutes.js';
+import mesuresRoutes from './routes/mesuresRoutes.js';
 connectDB();
-
 const app = express();
-
 // Utilisez express.json() et express.urlencoded() pour analyser les corps des requêtes
 app.use(express.json());
-
 // Routes publiques
 app.use('/auth', authRoutes);
 // Middleware d'authentification
@@ -26,7 +24,7 @@ app.use('/discussions', discutionsRoutes);
 app.use('/services', servicesRoutes);
 app.use('/posts', postRoutes);
 app.use('/follows', followRoutes);
+app.use('/mesures', mesuresRoutes);
 app.use('/signaler', signalementRoutes);
-
 app.use('/commandes', commandeRoutes);
 export default app;
