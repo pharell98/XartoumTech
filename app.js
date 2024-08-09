@@ -6,6 +6,7 @@ import servicesRoutes from './routes/ServicesRoute.js';
 import AuthMiddleware from './middlewares/AuthMiddleware.js';
 import discutionsRoutes from './routes/discutionsRoutes.js';
 import followRoutes from './routes/followRoutes.js';
+import signalementRoutes from './routes/signalementRoutes.js';
 
 connectDB();
 
@@ -25,7 +26,6 @@ app.use('/discussions', discutionsRoutes);
 app.use('/services', servicesRoutes);
 app.use('/posts', postRoutes);
 app.use('/follows', followRoutes);
-
-
+app.use('/signaler', signalementRoutes);
 
 export default app;

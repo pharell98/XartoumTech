@@ -74,4 +74,14 @@ export const storyValidationRules = () => {
     ];
 };
 
-
+export const signalementValidationRules = () => {
+    return [
+        check('idUtilisateurSignale').isMongoId().withMessage('L\'utilisateur signalé est requis et doit être un ObjectId valide'),
+        check('motif')
+            .notEmpty()
+            .withMessage('Le motif est requis')
+            .isIn(['Contenu inapproprié', 'Harcèlement', 'Spam', 'Faux profil', 'Autre'])
+            .withMessage('Motif de signalement invalide.'),
+        check('description').optional().isString().withMessage('La description doit être une chaîne de caractères')
+    ];
+};
