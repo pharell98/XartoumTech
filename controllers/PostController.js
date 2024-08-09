@@ -34,10 +34,24 @@ class PostController extends BaseController {
         try {
             const postId = req.params.id;
             const commentData = req.body;
-            const updatedPost = await this.service.addComment(postId, commentData);
+            const updatedPost = await this.service.addComment(postId, commentData, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de l\'ajout du commentaire:', err);
+            sendResponse(res, 500, { message: 'Erreur serveur interne' });
+        }
+    }
+
+    async updateComment(req, res) {
+        try {
+            const postId = req.params.id;
+            const commentId = req.params.commentId;
+            const commentData = req.body;
+
+            const updatedPost = await this.service.updateComment(postId, commentId, commentData, req.user.id);
+            sendResponse(res, 200, updatedPost);
+        } catch (err) {
+            console.error('Erreur lors de la mise à jour du commentaire:', err);
             sendResponse(res, 500, { message: 'Erreur serveur interne' });
         }
     }
@@ -46,7 +60,8 @@ class PostController extends BaseController {
         try {
             const postId = req.params.id;
             const commentId = req.params.commentId;
-            const updatedPost = await this.service.removeComment(postId, commentId);
+
+            const updatedPost = await this.service.removeComment(postId, commentId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de la suppression du commentaire:', err);
@@ -54,11 +69,11 @@ class PostController extends BaseController {
         }
     }
 
+    // Mettez à jour les méthodes like, dislike, removeLike, removeDislike pour utiliser req.user.id
     async likePost(req, res) {
         try {
             const postId = req.params.id;
-            const userId = req.body.userId;
-            const updatedPost = await this.service.likePost(postId, userId);
+            const updatedPost = await this.service.likePost(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de l\'ajout du like:', err);
@@ -69,8 +84,7 @@ class PostController extends BaseController {
     async dislikePost(req, res) {
         try {
             const postId = req.params.id;
-            const userId = req.body.userId;
-            const updatedPost = await this.service.dislikePost(postId, userId);
+            const updatedPost = await this.service.dislikePost(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de l\'ajout du dislike:', err);
@@ -81,8 +95,7 @@ class PostController extends BaseController {
     async removeLike(req, res) {
         try {
             const postId = req.params.id;
-            const userId = req.body.userId;
-            const updatedPost = await this.service.removeLike(postId, userId);
+            const updatedPost = await this.service.removeLike(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de la suppression du like:', err);
@@ -93,8 +106,7 @@ class PostController extends BaseController {
     async removeDislike(req, res) {
         try {
             const postId = req.params.id;
-            const userId = req.body.userId;
-            const updatedPost = await this.service.removeDislike(postId, userId);
+            const updatedPost = await this.service.removeDislike(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de la suppression du dislike:', err);
@@ -105,7 +117,7 @@ class PostController extends BaseController {
     async viewPost(req, res) {
         try {
             const postId = req.params.id;
-            const updatedPost = await this.service.viewPost(postId);
+            const updatedPost = await this.service.viewPost(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors de l\'ajout de la vue:', err);
@@ -116,7 +128,7 @@ class PostController extends BaseController {
     async sharePost(req, res) {
         try {
             const postId = req.params.id;
-            const updatedPost = await this.service.sharePost(postId);
+            const updatedPost = await this.service.sharePost(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors du partage:', err);
@@ -127,7 +139,7 @@ class PostController extends BaseController {
     async downloadPost(req, res) {
         try {
             const postId = req.params.id;
-            const updatedPost = await this.service.downloadPost(postId);
+            const updatedPost = await this.service.downloadPost(postId, req.user.id);
             sendResponse(res, 200, updatedPost);
         } catch (err) {
             console.error('Erreur lors du téléchargement:', err);

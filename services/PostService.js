@@ -22,21 +22,11 @@ class PostService extends BaseService {
     }
 
     async createPost(data, filePath, userId) {
-        // Récupérer l'utilisateur
         const utilisateur = await Utilisateur.findById(userId);
         if (!utilisateur) {
             throw new Error('Utilisateur non trouvé');
         }
 
-        // Initialiser les champs si nécessaire
-        if (!utilisateur.postsGratuitsQuotidiens) {
-            utilisateur.postsGratuitsQuotidiens = new Date(0); // Date très ancienne
-        }
-        if (!utilisateur.postsGratuits) {
-            utilisateur.postsGratuits = 0;
-        }
-
-        // Vérifier le nombre de posts gratuits aujourd'hui
         const today = new Date().setHours(0, 0, 0, 0);
         if (utilisateur.postsGratuitsQuotidiens.getTime() < today) {
             utilisateur.postsGratuitsQuotidiens = new Date(today);
@@ -46,7 +36,6 @@ class PostService extends BaseService {
         if (utilisateur.postsGratuits < 3) {
             utilisateur.postsGratuits += 1;
         } else {
-            // Vérifier le solde de l'utilisateur
             if (utilisateur.solde < 1) {
                 throw new Error('Solde insuffisant pour poster un nouveau post');
             }
@@ -70,155 +59,172 @@ class PostService extends BaseService {
         return await post.save();
     }
 
-
-    async addComment(postId, commentData) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.commentaires.push(commentData);
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.addComment:', err);
-            throw err;
+    async updatePost(postId, userId, updateData) {
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        if (post.tailleurId.toString() !== userId) {
+            throw new Error('Vous n\'êtes pas autorisé à modifier ce post');
+        }
+
+        Object.assign(post, updateData);
+        return await post.save();
     }
 
-    async removeComment(postId, commentId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.commentaires.id(commentId).remove();
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.removeComment:', err);
-            throw err;
+    async deletePost(postId, userId) {
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        if (post.tailleurId.toString() !== userId) {
+            throw new Error('Vous n\'êtes pas autorisé à supprimer ce post');
+        }
+
+        return await post.remove();
+    }
+
+    async addComment(postId, commentData, userId) {
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
+        }
+
+        const newComment = {
+            ...commentData,
+            utilisateurId: userId
+        };
+
+        post.commentaires.push(newComment);
+        return await post.save();
+    }
+
+    async updateComment(postId, commentId, userId, updateData) {
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
+        }
+
+        const comment = post.commentaires.id(commentId);
+        if (!comment) {
+            throw new Error('Commentaire non trouvé');
+        }
+
+        if (comment.utilisateurId.toString() !== userId) {
+            throw new Error('Vous n\'êtes pas autorisé à modifier ce commentaire');
+        }
+
+        Object.assign(comment, updateData);
+        return await post.save();
+    }
+
+    async removeComment(postId, commentId, userId) {
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
+        }
+
+        const comment = post.commentaires.id(commentId);
+        if (!comment) {
+            throw new Error('Commentaire non trouvé');
+        }
+
+        if (comment.utilisateurId.toString() !== userId) {
+            throw new Error('Vous n\'êtes pas autorisé à supprimer ce commentaire');
+        }
+
+        comment.remove();
+        return await post.save();
     }
 
     async likePost(postId, userId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-
-            // Enlever le dislike si l'utilisateur a déjà disliké
-            if (post.dislikes.includes(userId)) {
-                post.dislikes = post.dislikes.filter((id) => id.toString() !== userId);
-            }
-
-            // Enlever le like si l'utilisateur a déjà liké
-            if (post.likes.includes(userId)) {
-                post.likes = post.likes.filter((id) => id.toString() !== userId);
-            } else {
-                post.likes.push(userId);
-            }
-
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.likePost:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        if (post.dislikes.includes(userId)) {
+            post.dislikes = post.dislikes.filter((id) => id.toString() !== userId);
+        }
+
+        if (post.likes.includes(userId)) {
+            post.likes = post.likes.filter((id) => id.toString() !== userId);
+        } else {
+            post.likes.push(userId);
+        }
+
+        return await post.save();
     }
 
     async dislikePost(postId, userId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-
-            // Enlever le like si l'utilisateur a déjà liké
-            if (post.likes.includes(userId)) {
-                post.likes = post.likes.filter((id) => id.toString() !== userId);
-            }
-
-            // Enlever le dislike si l'utilisateur a déjà disliké
-            if (post.dislikes.includes(userId)) {
-                post.dislikes = post.dislikes.filter((id) => id.toString() !== userId);
-            } else {
-                post.dislikes.push(userId);
-            }
-
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.dislikePost:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        if (post.likes.includes(userId)) {
+            post.likes = post.likes.filter((id) => id.toString() !== userId);
+        }
+
+        if (post.dislikes.includes(userId)) {
+            post.dislikes = post.dislikes.filter((id) => id.toString() !== userId);
+        } else {
+            post.dislikes.push(userId);
+        }
+
+        return await post.save();
     }
 
     async removeLike(postId, userId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.likes = post.likes.filter((id) => id.toString() !== userId);
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.removeLike:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        post.likes = post.likes.filter((id) => id.toString() !== userId);
+        return await post.save();
     }
 
     async removeDislike(postId, userId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.dislikes = post.dislikes.filter((id) => id.toString() !== userId);
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.removeDislike:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        post.dislikes = post.dislikes.filter((id) => id.toString() !== userId);
+        return await post.save();
     }
 
     async viewPost(postId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.vues += 1;
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.viewPost:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        post.vues += 1;
+        return await post.save();
     }
 
     async sharePost(postId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.partages += 1;
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.sharePost:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        post.partages += 1;
+        return await post.save();
     }
 
     async downloadPost(postId) {
-        try {
-            const post = await this.model.findById(postId);
-            if (!post) {
-                throw new Error('Post non trouvé');
-            }
-            post.telechargements += 1;
-            return await post.save();
-        } catch (err) {
-            console.error('Erreur dans PostService.downloadPost:', err);
-            throw err;
+        const post = await this.model.findById(postId);
+        if (!post) {
+            throw new Error('Post non trouvé');
         }
+
+        post.telechargements += 1;
+        return await post.save();
     }
 }
 
