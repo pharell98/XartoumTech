@@ -6,6 +6,7 @@ import servicesRoutes from './routes/ServicesRoute.js';
 import AuthMiddleware from './middlewares/AuthMiddleware.js';
 import discutionsRoutes from './routes/discutionsRoutes.js';
 import mesuresRoutes from './routes/mesuresRoutes.js';
+import bloquerRoutes from './routes/bloquerRoutes.js';
 connectDB();
 
 const app = express();
@@ -24,5 +25,6 @@ app.use('/discussions', discutionsRoutes);
 app.use('/services', servicesRoutes);
 app.use('/posts', postRoutes);
 app.use('/mesures', mesuresRoutes);
+app.use('/bloquer', bloquerRoutes);
 
 export default app;

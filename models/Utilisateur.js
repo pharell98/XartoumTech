@@ -36,6 +36,7 @@ const utilisateurSchema = new Schema({
     profile: { type: profileSchema, required: true },
     followers: [{ type: Schema.Types.ObjectId, ref: 'Utilisateur' }],
     following: [{ type: Schema.Types.ObjectId, ref: 'Utilisateur' }],
+    bloquer: [{ type: Schema.Types.ObjectId, ref: 'Utilisateur' }],
     evaluations: [{ type: Schema.Types.ObjectId, ref: 'Evaluation' }],
     services: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
     favoris: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
