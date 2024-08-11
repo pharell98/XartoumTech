@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const mesureSchema = new Schema({
-    nom: { type: String , unique: true },  // Ajout de `required: true` pour éviter les valeurs nulles
+    nom: { type: String},  // Ajout de `required: true` pour éviter les valeurs nulles
     type: { type: String, enum: ['Homme', 'Femme', 'Enfant'] },
     valeurs: {
       poitrine: { type: Number },
@@ -36,7 +36,7 @@ const profileSchema = new Schema({
     telephone: { type: String, required: true },
     aPropos: { type: String },
     stateProfiles: { type: String, enum: ['normal', 'signaler'], default: 'normal' },
-    sexe: { type: String, enum: ['Homme', 'Femme'], default: 'Homme' }
+    sexe: { type: String, enum: ['Homme', 'Femme'] }
 }, { _id: false });  // Important: _id: false pour éviter un ID distinct
 
 // Schéma pour les utilisateurs

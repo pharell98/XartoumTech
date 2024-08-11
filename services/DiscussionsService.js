@@ -1,15 +1,18 @@
 import BaseService from './BaseService.js';
 import Discussions from '../models/Discussions.js';
-
 class DiscussionsService extends BaseService {
     constructor() {
         super(Discussions);
     }
 
-    async createOrUpdateDiscussion(discussionData) {
+    async createOrUpdateDiscussion(discussionData, userId) {
         try {
+            // Utiliser l'ID de l'utilisateur qui envoie le message
+            discussionData.from = userId;
+
             const participantsKey = [discussionData.from, discussionData.to].sort().join('_');
             let discussion = await this.model.findOne({ participantsKey });
+
             if (discussion) {
                 discussion.messages.push({ contenu: discussionData.contenu });
                 await discussion.save();

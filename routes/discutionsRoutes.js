@@ -10,7 +10,7 @@ const router = express.Router();
 router.post('/create',AuthMiddleware.verify, discussionsValidationRules(), ValidationMiddleware.validate, DiscussionsController.createOrUpdateDiscussion.bind(DiscussionsController));
 
 // Route pour récupérer toutes les discussions d'un utilisateur spécifique
-router.get('/:userId',AuthMiddleware.verify, DiscussionsController.getDiscussions.bind(DiscussionsController));
+router.get('/',AuthMiddleware.verify, DiscussionsController.getDiscussions.bind(DiscussionsController));
 
 // Route pour récupérer une discussion spécifique par son ID
 router.get('/discussion/:id',AuthMiddleware.verify, DiscussionsController.getDiscussionById.bind(DiscussionsController));
