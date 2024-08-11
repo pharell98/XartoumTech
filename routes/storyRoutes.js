@@ -12,5 +12,6 @@ router.post("/", AuthMiddleware.verify, upload.single('file'), storyValidationRu
 router.get("/:id/view", AuthMiddleware.verify, StoryController.view.bind(StoryController));
 router.post("/:id/reaction", AuthMiddleware.verify, StoryController.addReaction.bind(StoryController));
 router.post("/:id/response", AuthMiddleware.verify, StoryController.addResponse.bind(StoryController));
+router.delete("/:id/response/:responseId", AuthMiddleware.verify, StoryController.removeResponse.bind(StoryController));
 
 export default router;

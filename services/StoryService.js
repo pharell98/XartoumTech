@@ -76,6 +76,27 @@ class StoryService extends BaseService {
         }
     }
 
+    async removeResponse(storyId, responseId, userId) {
+        const story = await this.model.findById(storyId);
+        if (!story) {
+            throw new Error('Story non trouvée');
+        }
+
+        const response = story.responses.id(responseId);
+        if (!response) {
+            throw new Error('Réponse non trouvée');
+        }
+
+        // Vérifiez si l'utilisateur est le propriétaire de la réponse
+        if (response.utilisateurId.toString() !== userId) {
+            throw new Error('Vous n\'êtes pas autorisé à supprimer cette réponse');
+        }
+
+        response.remove();
+        await story.save();
+        return story;
+    }
+
     async createOrUpdateDiscussion(from, to, contenu) {
         try {
             const participantsKey = [from.toString(), to.toString()].sort().join('_');
