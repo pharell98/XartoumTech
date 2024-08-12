@@ -11,18 +11,31 @@ import commandeRoutes from './routes/commandeRoutes.js';
 import mesuresRoutes from './routes/mesuresRoutes.js';
 import bloquerRoutes from './routes/bloquerRoutes.js';
 import evaluationRoutes from './routes/evaluationRoutes.js';
+// import storyRoutes from './routes/storyRoutes.js';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+// Connect to the database
 connectDB();
+
 const app = express();
-// Utilisez express.json() et express.urlencoded() pour analyser les corps des requêtes
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
+
+
+// Middleware for parsing JSON bodies in requests
 app.use(express.json());
-// Routes publiques
+app.use('/api-docs-tailleur', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Public routes
 app.use('/auth', authRoutes);
-// Middleware d'authentification
+
+// Middleware for authentication
 app.use(AuthMiddleware.verify);
-/*
-// Routes protégées
-*/
+// Protected routes
 app.use('/discussions', discutionsRoutes);
 app.use('/services', servicesRoutes);
 app.use('/posts', postRoutes);
@@ -32,6 +45,8 @@ app.use('/signaler', signalementRoutes);
 app.use('/commandes', commandeRoutes);
 app.use('/bloquer', bloquerRoutes);
 app.use('/evaluation', evaluationRoutes);
+// app.use('/story',storyRoutes);
+
 
 
 export default app;

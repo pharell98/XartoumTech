@@ -1,0 +1,446 @@
+  openapi: 3.0.0
+  servers:
+    - description: Serveur local pour XartoumTech
+      url: http://127.0.0.1:3000
+  info:
+    version: "1.0.0"
+    title: XartoumTech API
+    description: L'API pour l'application de réseau social des tailleurs en relation avec des clients.
+  components:
+    securitySchemes:
+      BearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+    schemas:
+      Register:
+        type: object
+        properties:
+          photo:
+            type: string
+            format: binary
+          nom:
+            type: string
+          prenom:
+            type: string
+          login:
+            type: string
+          motDePasse:
+            type: string
+          role:
+            type: string
+          adresse:
+            type: string
+          email:
+            type: string
+          telephone:
+            type: string
+          aPropos:
+            type: string
+          sexe:
+            type: string
+        required:
+          - photo
+          - nom
+          - prenom
+          - login
+          - motDePasse
+          - role
+          - adresse
+          - email
+          - telephone
+          - aPropos
+          - sexe
+      Login:
+        type: object
+        properties:
+          login:
+            type: string
+          motDePasse:
+            type: string
+        required:
+          - login
+          - motDePasse
+
+      Discussion:
+        type: object
+        properties:
+          userId:
+            type: string
+          message:
+            type: string
+      Mesure:
+        type: object
+        properties:
+          nom:
+            type: string
+          valeur:
+            type: string
+      Commande:
+        type: object
+        properties:
+          productId:
+            type: string
+          quantity:
+            type: integer
+
+      Signalement:
+        type: object
+        properties:
+          userId:
+            type: string
+          reason:
+            type: string
+
+      Evaluation:
+        type: object
+        properties:
+          rating:
+            type: integer
+          commentaire:
+            type: string
+
+  paths:
+    /auth/register:
+      post:
+        tags:
+          - Auth
+        summary: Inscription d'un nouvel utilisateur
+        requestBody:
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  "photo":
+                    type: string
+                    format: binary
+                  "profile[nom]":
+                    type: string
+                  "profile[prenom]":
+                    type: string
+                  "profile[login]":
+                    type: string
+                  "profile[motDePasse]":
+                    type: string
+                  "profile[role]":
+                    type: string
+                  "profile[adresse]":
+                    type: string
+                  "profile[email]":
+                    type: string
+                  "profile[telephone]":
+                    type: string
+                  "profile[aPropos]":
+                    type: string
+                  "profile[sexe]":
+                    type: string
+                required:
+                  - "photo"
+                  - "profile[nom]"
+                  - "profile[prenom]"
+                  - "profile[login]"
+                  - "profile[motDePasse]"
+                  - "profile[role]"
+                  - "profile[adresse]"
+                  - "profile[email]"
+                  - "profile[telephone]"
+                  - "profile[sexe]"
+        responses:
+          '201':
+            description: Utilisateur inscrit avec succès
+    /auth/login:
+      post:
+        tags:
+          - Auth
+        summary: Connexion utilisateur
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+        responses:
+          '200':
+            description: Connexion réussie
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    utilisateur:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        profile:
+                          type: object
+                          properties:
+                            photo:
+                              type: string
+                            nom:
+                              type: string
+                            prenom:
+                              type: string
+                            login:
+                              type: string
+                            motDePasse:
+                              type: string
+                            role:
+                              type: string
+                            adresse:
+                              type: string
+                            email:
+                              type: string
+                            telephone:
+                              type: string
+                            stateProfiles:
+                              type: string
+                            sexe:
+                              type: string
+                    token:
+                      type: string
+                      description: Le Bearer Token de l'utilisateur
+          '403':
+            description: Accès refusé
+
+    /discussions:
+      get:
+        security:
+          - BearerAuth: []  # Nécessite un token Bearer
+        tags:
+          - Discussions
+        summary: Récupérer toutes les discussions d'un utilisateur
+        responses:
+          '200':
+            description: Liste des discussions
+
+    /discussions/create:
+      post:
+        security:
+          - BearerAuth: []  # Nécessite un token Bearer
+        tags:
+          - Discussions
+        summary: Créer ou mettre à jour une discussion
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discussion'
+        responses:
+          '201':
+            description: Discussion créée ou mise à jour avec succès
+    /discussions/discussion/{id}:
+      get:
+        security:
+          - BearerAuth: []
+        tags:
+          - Discussions
+        summary: Recupération discussion par son ID
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+            description: ID unique de la discussion à récupérer
+        responses:
+            '200':
+              description: Discussion récupérée avec succès
+    /posts:
+      get:
+        security:
+          - BearerAuth: []  # Nécessite un token Bearer
+        tags:
+          - Posts
+        summary: Récupérer tous les posts
+        responses:
+          '200':
+            description: Liste des posts
+
+    /posts/{id}:
+      get:
+        security:
+          - BearerAuth: []
+        tags:
+          - Posts
+        summary: Récupérer un post spécifique par son ID
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Post récupéré avec succès
+
+    /services:
+      get:
+        security:
+          - BearerAuth: []
+        tags:
+          - Services
+        summary: Récupérer tous les services
+        responses:
+          '200':
+            description: Liste des services
+
+    /follows/{id}/follow:
+      post:
+        security:
+          - BearerAuth: []
+        tags:
+          - Follows
+        summary: Suivre un utilisateur
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+        responses:
+          '201':
+            description: Utilisateur suivi avec succès
+
+    /follows/{id}/unfollow:
+      delete:
+        security:
+          - BearerAuth: []
+        tags:
+          - Follows
+        summary: Ne plus suivre un utilisateur
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Utilisateur ne plus suivi avec succès
+
+    /mesures/add:
+      post:
+        security:
+          - BearerAuth: []
+        tags:
+          - Mesures
+        summary: Ajouter ou mettre à jour une mesure
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mesure'
+        responses:
+          '201':
+            description: Mesure ajoutée ou mise à jour avec succès
+
+    /commandes:
+      get:
+        security:
+          - BearerAuth: []
+        tags:
+          - Commandes
+        summary: Récupérer toutes les commandes
+        responses:
+          '200':
+            description: Liste des commandes
+
+    /commandes/create:
+      post:
+        security:
+          - BearerAuth: []
+        tags:
+          - Commandes
+        summary: Créer une commande
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Commande'
+        responses:
+          '201':
+            description: Commande créée avec succès
+
+    /commandes/{id}:
+      get:
+        security:
+          - BearerAuth: []
+        tags:
+          - Commandes
+        summary: Récupérer une commande spécifique par son ID
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Commande récupérée avec succès
+
+    /bloquer/{id}/bloquer:
+      post:
+        security:
+          - BearerAuth: []
+        tags:
+          - Bloquer
+        summary: Bloquer un utilisateur
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+        responses:
+          '201':
+            description: Utilisateur bloqué avec succès
+
+    /bloquer/{id}/debloquer:
+      delete:
+        security:
+          - BearerAuth: []
+        tags:
+          - Bloquer
+        summary: Débloquer un utilisateur
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Utilisateur débloqué avec succès
+
+    /signalements/add:
+      post:
+        security:
+          - BearerAuth: []
+        tags:
+          - Signalements
+        summary: Créer un nouveau signalement
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signalement'
+        responses:
+          '201':
+            description: Signalement créé avec succès
+
+    /evaluation/create:
+      post:
+        security:
+          - BearerAuth: []
+        tags:
+          - Evaluation
+        summary: Créer une évaluation
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+        responses:
+          '201':
+            description: Évaluation créée avec succès
