@@ -11,7 +11,8 @@ import commandeRoutes from './routes/commandeRoutes.js';
 import mesuresRoutes from './routes/mesuresRoutes.js';
 import bloquerRoutes from './routes/bloquerRoutes.js';
 import evaluationRoutes from './routes/evaluationRoutes.js';
-// import storyRoutes from './routes/storyRoutes.js';
+import storyRoutes from './routes/storyRoutes.js';
+
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
@@ -28,7 +29,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
 
 // Middleware for parsing JSON bodies in requests
 app.use(express.json());
-app.use('/api-docs-tailleur', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs-XartoumTech', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Public routes
 app.use('/auth', authRoutes);
@@ -45,7 +46,7 @@ app.use('/signaler', signalementRoutes);
 app.use('/commandes', commandeRoutes);
 app.use('/bloquer', bloquerRoutes);
 app.use('/evaluation', evaluationRoutes);
-// app.use('/story',storyRoutes);
+app.use('/story',storyRoutes);
 
 
 

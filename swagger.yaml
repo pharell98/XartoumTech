@@ -1,446 +1,1499 @@
-  openapi: 3.0.0
-  servers:
-    - description: Serveur local pour XartoumTech
-      url: http://127.0.0.1:3000
-  info:
-    version: "1.0.0"
-    title: XartoumTech API
-    description: L'API pour l'application de réseau social des tailleurs en relation avec des clients.
-  components:
-    securitySchemes:
-      BearerAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT
-    schemas:
-      Register:
-        type: object
-        properties:
-          photo:
-            type: string
-            format: binary
-          nom:
-            type: string
-          prenom:
-            type: string
-          login:
-            type: string
-          motDePasse:
-            type: string
-          role:
-            type: string
-          adresse:
-            type: string
-          email:
-            type: string
-          telephone:
-            type: string
-          aPropos:
-            type: string
-          sexe:
-            type: string
-        required:
-          - photo
-          - nom
-          - prenom
-          - login
-          - motDePasse
-          - role
-          - adresse
-          - email
-          - telephone
-          - aPropos
-          - sexe
-      Login:
-        type: object
-        properties:
-          login:
-            type: string
-          motDePasse:
-            type: string
-        required:
-          - login
-          - motDePasse
+openapi: 3.0.0
+servers:
+  - description: Serveur local pour XartoumTech
+    url: http://127.0.0.1:3000
+info:
+  version: "1.0.0"
+  title: XartoumTech API
+  description: L'API pour l'application de réseau social des tailleurs en relation avec des clients.
 
-      Discussion:
-        type: object
-        properties:
-          userId:
-            type: string
-          message:
-            type: string
-      Mesure:
-        type: object
-        properties:
-          nom:
-            type: string
-          valeur:
-            type: string
-      Commande:
-        type: object
-        properties:
-          productId:
-            type: string
-          quantity:
-            type: integer
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
-      Signalement:
-        type: object
-        properties:
-          userId:
-            type: string
-          reason:
-            type: string
+  schemas:
+    Register:
+      type: object
+      properties:
+        photo:
+          type: string
+          format: binary
+        nom:
+          type: string
+        prenom:
+          type: string
+        login:
+          type: string
+        motDePasse:
+          type: string
+        role:
+          type: string
+        adresse:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        aPropos:
+          type: string
+        sexe:
+          type: string
+      required:
+        - photo
+        - nom
+        - prenom
+        - login
+        - motDePasse
+        - role
+        - adresse
+        - email
+        - telephone
+        - aPropos
+        - sexe
 
-      Evaluation:
-        type: object
-        properties:
-          rating:
-            type: integer
-          commentaire:
-            type: string
+    Login:
+      type: object
+      properties:
+        login:
+          type: string
+        motDePasse:
+          type: string
+      required:
+        - login
+        - motDePasse
 
-  paths:
-    /auth/register:
-      post:
-        tags:
-          - Auth
-        summary: Inscription d'un nouvel utilisateur
-        requestBody:
+    Discussion:
+      type: object
+      properties:
+        userId:
+          type: string
+        message:
+          type: string
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [ 'modele_pret', 'commande_sur_mesure', 'reparation' ]
+        nom:
+          type: string
+        description:
+          type: string
+        prixBase:
+          type: number
+        urlImage:
+          type: array
+          items:
+            type: string
+        stock:
+          type: number
+          default: 0
+        tailleur:
+          type: string
+          description: ID du tailleur associé
+
+    ServiceInput:
+      type: object
+      required:
+        - type
+        - nom
+        - description
+        - prixBase
+        - urlImage
+        - tailleur
+      properties:
+        type:
+          type: string
+          enum: [ 'modele_pret', 'commande_sur_mesure', 'reparation' ]
+        nom:
+          type: string
+        description:
+          type: string
+        prixBase:
+          type: number
+        urlImage:
+          type: array
+          items:
+            type: string
+        stock:
+          type: number
+          default: 0
+        tailleur:
+          type: string
+          description: ID du tailleur associé
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        tailleurId:
+          type: string
+          description: ID du tailleur associé au post
+        titre:
+          type: string
+        description:
+          type: string
+        file:
+          type: array
+          items:
+            $ref: '#/components/schemas/File'
+        vues:
+          type: number
+          default: 0
+        partages:
+          type: number
+          default: 0
+        likes:
+          type: array
+          items:
+            type: string
+        dislikes:
+          type: array
+          items:
+            type: string
+        telechargements:
+          type: number
+          default: 0
+        commentaires:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+
+    PostInput:
+      type: object
+      required:
+        - description
+      properties:
+        tailleurId:
+          type: string
+          description: ID du tailleur associé au post
+        titre:
+          type: string
+        description:
+          type: string
+        file:
+          type: array
+          items:
+            $ref: '#/components/schemas/File'
+
+    PostUpdateInput:
+      type: object
+      properties:
+        titre:
+          type: string
+        description:
+          type: string
+        file:
+          type: array
+          items:
+            $ref: '#/components/schemas/File'
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        utilisateurId:
+          type: string
+          description: ID de l'utilisateur ayant fait le commentaire
+        contenu:
+          type: string
+
+    CommentInput:
+      type: object
+      required:
+        - contenu
+      properties:
+        contenu:
+          type: string
+
+    Mesure:
+      type: object
+      properties:
+        nom:
+          type: string
+        type:
+          type: string
+          enum: [ 'Homme', 'Femme', 'Enfant' ]
+        valeurs:
+          type: object
+          properties:
+            poitrine:
+              type: number
+            taille:
+              type: number
+            hanches:
+              type: number
+            hauteur:
+              type: number
+            cou:
+              type: number
+            epaules:
+              type: number
+            longueurManche:
+              type: number
+            longueurPantalon:
+              type: number
+            tourCeinture:
+              type: number
+            sousPoitrine:
+              type: number
+            tourDeBuste:
+              type: number
+            longueurRobe:
+              type: number
+            longueurBras:
+              type: number
+            longueurJambe:
+              type: number
+
+    Utilisateur:
+      type: object
+      properties:
+        id:
+          type: string
+        profile:
+          type: object
+          properties:
+            photo:
+              type: string
+            nom:
+              type: string
+            prenom:
+              type: string
+            login:
+              type: string
+            motDePasse:
+              type: string
+            role:
+              type: string
+              enum: [ 'tailleur', 'client' ]
+            adresse:
+              type: string
+            email:
+              type: string
+            telephone:
+              type: string
+            aPropos:
+              type: string
+            stateProfiles:
+              type: string
+              enum: [ 'normal', 'signaler' ]
+              default: 'normal'
+            sexe:
+              type: string
+              enum: [ 'Homme', 'Femme' ]
+        followers:
+          type: array
+          items:
+            type: string
+        following:
+          type: array
+          items:
+            type: string
+        bloquer:
+          type: array
+          items:
+            type: string
+        evaluations:
+          type: array
+          items:
+            type: string
+        services:
+          type: array
+          items:
+            type: string
+        favoris:
+          type: array
+          items:
+            type: string
+        mesMesures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mesure'
+        signalementsCount:
+          type: number
+          default: 0
+        solde:
+          type: number
+          default: 0
+        postsGratuits:
+          type: number
+          default: 0
+        postsGratuitsQuotidiens:
+          type: string
+          format: date-time
+
+    Commande:
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: ID du client qui passe la commande
+        tailleurId:
+          type: string
+          description: ID du tailleur associé à la commande
+        serviceId:
+          type: string
+          description: ID du service associé à la commande
+        quantite:
+          type: number
+          description: Quantité commandée
+        total:
+          type: number
+          description: Montant total de la commande
+        statut:
+          type: string
+          enum: [ 'en attente', 'en cours', 'terminer' ]
+          description: Statut de la commande
+
+    Signalement:
+      type: object
+      properties:
+        idUtilisateurSignale:
+          type: string
+          description: ID de l'utilisateur signalé
+        idUtilisateurSignalant:
+          type: string
+          description: ID de l'utilisateur qui fait le signalement
+        motif:
+          type: string
+          enum: [ 'Contenu inapproprié', 'Harcèlement', 'Spam', 'Faux profil', 'Autre' ]
+          description: Motif du signalement
+        description:
+          type: string
+          description: Description supplémentaire pour le motif "Autre"
+        timestamp:
+          type: string
+          format: date-time
+          description: Date et heure du signalement
+
+    Evaluation:
+      type: object
+      properties:
+        utilisateurId:
+          type: string
+          description: ID de l'utilisateur qui fait l'évaluation
+        note:
+          type: number
+          minimum: 0
+          maximum: 5
+          description: Note donnée par l'utilisateur
+
+    Story:
+      type: object
+      properties:
+        id:
+          type: string
+        utilisateurId:
+          type: string
+          description: ID de l'utilisateur ayant créé la story
+        titre:
+          type: string
+          description: Titre de la story
+        description:
+          type: string
+          required: true
+          description: Description de la story
+        file:
+          type: array
+          items:
+            $ref: '#/components/schemas/File'
+        vues:
+          type: number
+          default: 0
+          description: Nombre de vues de la story
+        expiration:
+          type: string
+          format: date-time
+          required: true
+          description: Date d'expiration de la story
+        reactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reaction'
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Response'
+
+    Reaction:
+      type: object
+      properties:
+        utilisateurId:
+          type: string
+          description: ID de l'utilisateur ayant ajouté la réaction
+        reactionType:
+          type: string
+          enum: [ "like", "emoji" ]
+          description: Type de réaction
+        emoji:
+          type: string
+          description: Emoji utilisé pour la réaction (si applicable)
+
+    Response:
+      type: object
+      properties:
+        utilisateurId:
+          type: string
+          description: ID de l'utilisateur ayant ajouté la réponse
+        contenu:
+          type: string
+          description: Contenu de la réponse
+
+    File:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["image", "video"]
+          description: Type de fichier
+        url:
+          type: string
+          description: URL du fichier
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Inscription d'un nouvel utilisateur
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: binary
+                profile[nom]:
+                  type: string
+                profile[prenom]:
+                  type: string
+                profile[login]:
+                  type: string
+                profile[motDePasse]:
+                  type: string
+                profile[role]:
+                  type: string
+                profile[adresse]:
+                  type: string
+                profile[email]:
+                  type: string
+                profile[telephone]:
+                  type: string
+                profile[aPropos]:
+                  type: string
+                profile[sexe]:
+                  type: string
+              required:
+                - photo
+                - profile[nom]
+                - profile[prenom]
+                - profile[login]
+                - profile[motDePasse]
+                - profile[role]
+                - profile[adresse]
+                - profile[email]
+                - profile[telephone]
+                - profile[sexe]
+      responses:
+        '201':
+          description: Utilisateur inscrit avec succès
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Connexion utilisateur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: Connexion réussie
           content:
-            multipart/form-data:
+            application/json:
               schema:
                 type: object
                 properties:
-                  "photo":
+                  utilisateur:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      profile:
+                        type: object
+                        properties:
+                          photo:
+                            type: string
+                          nom:
+                            type: string
+                          prenom:
+                            type: string
+                          login:
+                            type: string
+                          motDePasse:
+                            type: string
+                          role:
+                            type: string
+                          adresse:
+                            type: string
+                          email:
+                            type: string
+                          telephone:
+                            type: string
+                          stateProfiles:
+                            type: string
+                          sexe:
+                            type: string
+                  token:
                     type: string
-                    format: binary
-                  "profile[nom]":
-                    type: string
-                  "profile[prenom]":
-                    type: string
-                  "profile[login]":
-                    type: string
-                  "profile[motDePasse]":
-                    type: string
-                  "profile[role]":
-                    type: string
-                  "profile[adresse]":
-                    type: string
-                  "profile[email]":
-                    type: string
-                  "profile[telephone]":
-                    type: string
-                  "profile[aPropos]":
-                    type: string
-                  "profile[sexe]":
-                    type: string
-                required:
-                  - "photo"
-                  - "profile[nom]"
-                  - "profile[prenom]"
-                  - "profile[login]"
-                  - "profile[motDePasse]"
-                  - "profile[role]"
-                  - "profile[adresse]"
-                  - "profile[email]"
-                  - "profile[telephone]"
-                  - "profile[sexe]"
-        responses:
-          '201':
-            description: Utilisateur inscrit avec succès
-    /auth/login:
-      post:
-        tags:
-          - Auth
-        summary: Connexion utilisateur
-        requestBody:
+                    description: Le Bearer Token de l'utilisateur
+        '403':
+          description: Accès refusé
+
+  /discussions:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Discussions
+      summary: Récupérer toutes les discussions d'un utilisateur
+      responses:
+        '200':
+          description: Liste des discussions récupérée avec succès
+
+  /discussions/create:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Discussions
+      summary: Créer ou mettre à jour une discussion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Discussion'
+      responses:
+        '201':
+          description: Discussion créée ou mise à jour avec succès
+
+  /discussions/discussion/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Discussions
+      summary: Récupérer une discussion par son ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID unique de la discussion à récupérer
+      responses:
+        '200':
+          description: Discussion récupérée avec succès
+
+  /posts:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Posts
+      summary: Récupérer tous les posts
+      responses:
+        '200':
+          description: Liste des posts récupérée avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Login'
-        responses:
-          '200':
-            description: Connexion réussie
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    utilisateur:
-                      type: object
-                      properties:
-                        _id:
-                          type: string
-                        profile:
-                          type: object
-                          properties:
-                            photo:
-                              type: string
-                            nom:
-                              type: string
-                            prenom:
-                              type: string
-                            login:
-                              type: string
-                            motDePasse:
-                              type: string
-                            role:
-                              type: string
-                            adresse:
-                              type: string
-                            email:
-                              type: string
-                            telephone:
-                              type: string
-                            stateProfiles:
-                              type: string
-                            sexe:
-                              type: string
-                    token:
-                      type: string
-                      description: Le Bearer Token de l'utilisateur
-          '403':
-            description: Accès refusé
-
-    /discussions:
-      get:
-        security:
-          - BearerAuth: []  # Nécessite un token Bearer
-        tags:
-          - Discussions
-        summary: Récupérer toutes les discussions d'un utilisateur
-        responses:
-          '200':
-            description: Liste des discussions
-
-    /discussions/create:
-      post:
-        security:
-          - BearerAuth: []  # Nécessite un token Bearer
-        tags:
-          - Discussions
-        summary: Créer ou mettre à jour une discussion
-        requestBody:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Posts
+      summary: Créer un nouveau post
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Post créé avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Discussion'
-        responses:
-          '201':
-            description: Discussion créée ou mise à jour avec succès
-    /discussions/discussion/{id}:
-      get:
-        security:
-          - BearerAuth: []
-        tags:
-          - Discussions
-        summary: Recupération discussion par son ID
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-            description: ID unique de la discussion à récupérer
-        responses:
-            '200':
-              description: Discussion récupérée avec succès
-    /posts:
-      get:
-        security:
-          - BearerAuth: []  # Nécessite un token Bearer
-        tags:
-          - Posts
-        summary: Récupérer tous les posts
-        responses:
-          '200':
-            description: Liste des posts
+                $ref: '#/components/schemas/Post'
 
-    /posts/{id}:
-      get:
-        security:
-          - BearerAuth: []
-        tags:
-          - Posts
-        summary: Récupérer un post spécifique par son ID
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: Post récupéré avec succès
-
-    /services:
-      get:
-        security:
-          - BearerAuth: []
-        tags:
-          - Services
-        summary: Récupérer tous les services
-        responses:
-          '200':
-            description: Liste des services
-
-    /follows/{id}/follow:
-      post:
-        security:
-          - BearerAuth: []
-        tags:
-          - Follows
-        summary: Suivre un utilisateur
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-        responses:
-          '201':
-            description: Utilisateur suivi avec succès
-
-    /follows/{id}/unfollow:
-      delete:
-        security:
-          - BearerAuth: []
-        tags:
-          - Follows
-        summary: Ne plus suivre un utilisateur
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: Utilisateur ne plus suivi avec succès
-
-    /mesures/add:
-      post:
-        security:
-          - BearerAuth: []
-        tags:
-          - Mesures
-        summary: Ajouter ou mettre à jour une mesure
-        requestBody:
+  /posts/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Posts
+      summary: Récupérer un post spécifique par son ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post récupéré avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Mesure'
-        responses:
-          '201':
-            description: Mesure ajoutée ou mise à jour avec succès
+                $ref: '#/components/schemas/Post'
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - Posts
+      summary: Mettre à jour un post existant
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à mettre à jour
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateInput'
+      responses:
+        '200':
+          description: Post mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Posts
+      summary: Supprimer un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à supprimer
+      responses:
+        '200':
+          description: Post supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
-    /commandes:
-      get:
-        security:
-          - BearerAuth: []
-        tags:
-          - Commandes
-        summary: Récupérer toutes les commandes
-        responses:
-          '200':
-            description: Liste des commandes
+  /posts/{id}/comment:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Comments
+      summary: Ajouter un commentaire à un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à commenter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentInput'
+      responses:
+        '201':
+          description: Commentaire ajouté avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
 
-    /commandes/create:
-      post:
-        security:
-          - BearerAuth: []
-        tags:
-          - Commandes
-        summary: Créer une commande
-        requestBody:
+  /posts/{id}/comment/{commentId}:
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - Comments
+      summary: Mettre à jour un commentaire
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post contenant le commentaire
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+          description: ID du commentaire à mettre à jour
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentInput'
+      responses:
+        '200':
+          description: Commentaire mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Comments
+      summary: Supprimer un commentaire
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post contenant le commentaire
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+          description: ID du commentaire à supprimer
+      responses:
+        '200':
+          description: Commentaire supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /posts/{id}/like:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Likes
+      summary: Liker un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à liker
+      responses:
+        '200':
+          description: Post liké avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Likes
+      summary: Retirer un like d'un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post dont le like doit être retiré
+      responses:
+        '200':
+          description: Like retiré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /posts/{id}/dislike:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Dislikes
+      summary: Disliker un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à disliker
+      responses:
+        '200':
+          description: Post disliké avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Dislikes
+      summary: Retirer un dislike d'un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post dont le dislike doit être retiré
+      responses:
+        '200':
+          description: Dislike retiré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /posts/{id}/view:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Views
+      summary: Enregistrer une vue pour un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post dont la vue doit être enregistrée
+      responses:
+        '200':
+          description: Vue enregistrée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /posts/{id}/share:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Shares
+      summary: Partager un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à partager
+      responses:
+        '200':
+          description: Post partagé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /posts/{id}/download:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Downloads
+      summary: Télécharger un post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du post à télécharger
+      responses:
+        '200':
+          description: Post téléchargé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /services:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Services
+      summary: Récupérer tous les services
+      responses:
+        '200':
+          description: Liste des services récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+
+  /services/add:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Services
+      summary: Ajouter un nouveau service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceInput'
+      responses:
+        '201':
+          description: Service créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+
+  /services/update/{id}:
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - Services
+      summary: Mettre à jour un service existant
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du service à mettre à jour
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceInput'
+      responses:
+        '200':
+          description: Service mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+
+  /services/delete/{id}:
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Services
+      summary: Supprimer un service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du service à supprimer
+      responses:
+        '200':
+          description: Service supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Service supprimé avec succès"
+
+  /services/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Services
+      summary: Récupérer un service par son ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du service à récupérer
+      responses:
+        '200':
+          description: Service récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+
+  /follows/{id}/follow:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Follows
+      summary: Suivre un utilisateur
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'utilisateur à suivre
+      responses:
+        '201':
+          description: Utilisateur suivi avec succès
+
+  /follows/{id}/unfollow:
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Follows
+      summary: Ne plus suivre un utilisateur
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'utilisateur à ne plus suivre
+      responses:
+        '200':
+          description: Utilisateur ne plus suivi avec succès
+
+  /follows/{id}/followers:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Follows
+      summary: Récupérer la liste des abonnés d'un utilisateur
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'utilisateur dont on veut récupérer les abonnés
+      responses:
+        '200':
+          description: Liste des abonnés récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utilisateur'
+
+  /mesures/add:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Mesures
+      summary: Ajouter ou mettre à jour une mesure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mesure'
+      responses:
+        '201':
+          description: Mesure ajoutée ou mise à jour avec succès
+
+  /mesures:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Mesures
+      summary: Obtenir toutes les mesures d'un utilisateur
+      responses:
+        '200':
+          description: Liste des mesures récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mesure'
+
+  /mesures/{nom}:
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - Mesures
+      summary: Mettre à jour une mesure par nom
+      parameters:
+        - in: path
+          name: nom
+          required: true
+          schema:
+            type: string
+          description: Nom de la mesure à mettre à jour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mesure'
+      responses:
+        '200':
+          description: Mesure mise à jour avec succès
+
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Mesures
+      summary: Supprimer une mesure par nom
+      parameters:
+        - in: path
+          name: nom
+          required: true
+          schema:
+            type: string
+          description: Nom de la mesure à supprimer
+      responses:
+        '200':
+          description: Mesure supprimée avec succès
+
+  /commandes:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Commandes
+      summary: Récupérer toutes les commandes
+      responses:
+        '200':
+          description: Liste des commandes récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Commande'
+
+  /commandes/create:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Commandes
+      summary: Créer une commande
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Commande'
+      responses:
+        '201':
+          description: Commande créée avec succès
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Commande'
-        responses:
-          '201':
-            description: Commande créée avec succès
 
-    /commandes/{id}:
-      get:
-        security:
-          - BearerAuth: []
-        tags:
-          - Commandes
-        summary: Récupérer une commande spécifique par son ID
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: Commande récupérée avec succès
-
-    /bloquer/{id}/bloquer:
-      post:
-        security:
-          - BearerAuth: []
-        tags:
-          - Bloquer
-        summary: Bloquer un utilisateur
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-        responses:
-          '201':
-            description: Utilisateur bloqué avec succès
-
-    /bloquer/{id}/debloquer:
-      delete:
-        security:
-          - BearerAuth: []
-        tags:
-          - Bloquer
-        summary: Débloquer un utilisateur
-        parameters:
-          - in: path
-            name: id
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: Utilisateur débloqué avec succès
-
-    /signalements/add:
-      post:
-        security:
-          - BearerAuth: []
-        tags:
-          - Signalements
-        summary: Créer un nouveau signalement
-        requestBody:
+  /commandes/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Commandes
+      summary: Récupérer une commande spécifique par son ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la commande à récupérer
+      responses:
+        '200':
+          description: Commande récupérée avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Signalement'
-        responses:
-          '201':
-            description: Signalement créé avec succès
+                $ref: '#/components/schemas/Commande'
 
-    /evaluation/create:
-      post:
-        security:
-          - BearerAuth: []
-        tags:
-          - Evaluation
-        summary: Créer une évaluation
-        requestBody:
+  /bloquer/{id}/bloquer:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Bloquer
+      summary: Bloquer un utilisateur
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'utilisateur à bloquer
+      responses:
+        '201':
+          description: Utilisateur bloqué avec succès
+
+  /bloquer/{id}/debloquer:
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Bloquer
+      summary: Débloquer un utilisateur
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'utilisateur à débloquer
+      responses:
+        '200':
+          description: Utilisateur débloqué avec succès
+
+  /signalements/add:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Signalements
+      summary: Créer un nouveau signalement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signalement'
+      responses:
+        '201':
+          description: Signalement créé avec succès
+
+  /evaluation/create:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Evaluation
+      summary: Créer une évaluation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evaluation'
+      responses:
+        '201':
+          description: Évaluation créée avec succès
+
+  /story:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Stories
+      summary: Créer une nouvelle story
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Le fichier de la story (image ou vidéo)
+                titre:
+                  type: string
+                description:
+                  type: string
+                  required: true
+                expiration:
+                  type: string
+                  format: date-time
+                  required: true
+      responses:
+        '201':
+          description: Story créée avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Evaluation'
-        responses:
-          '201':
-            description: Évaluation créée avec succès
+                $ref: '#/components/schemas/Story'
+
+  /story/{id}/view:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Stories
+      summary: Voir une story spécifique par son ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la story à visualiser
+      responses:
+        '200':
+          description: Story vue avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
+
+  /story/{id}/reaction:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Stories
+      summary: Ajouter une réaction à une story
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la story à laquelle ajouter une réaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reactionType:
+                  type: string
+                  enum: ["like", "emoji"]
+                  description: Type de réaction
+                  required: true
+                emoji:
+                  type: string
+                  description: Emoji utilisé pour la réaction (si applicable)
+      responses:
+        '201':
+          description: Réaction ajoutée avec succès
+
+  /story/{id}/response:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Stories
+      summary: Ajouter une réponse à une story
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la story à laquelle ajouter une réponse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contenu:
+                  type: string
+                  description: Contenu de la réponse
+                  required: true
+      responses:
+        '201':
+          description: Réponse ajoutée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+
+  /story/{id}/response/{responseId}:
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Stories
+      summary: Supprimer une réponse à une story
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la story
+        - in: path
+          name: responseId
+          required: true
+          schema:
+            type: string
+          description: ID de la réponse à supprimer
+      responses:
+        '200':
+          description: Réponse supprimée avec succès
