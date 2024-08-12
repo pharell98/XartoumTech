@@ -1,7 +1,8 @@
 import BaseController from './BaseController.js';
 import PostService from '../services/PostService.js';
 import { sendResponse } from '../utils/response.js';
-import cloudinary from '../config/cloudinary.js';
+import { cloudinary } from '../config/cloudinary.js';
+
 
 class PostController extends BaseController {
     constructor() {

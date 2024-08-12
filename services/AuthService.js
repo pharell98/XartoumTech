@@ -2,8 +2,7 @@ import BaseService from './BaseService.js';
 import Utilisateur from '../models/Utilisateur.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwt.js';
-import cloudinary from '../config/cloudinary.js';
-
+import { cloudinary } from '../config/cloudinary.js';  // Importation nommée
 
 class AuthService extends BaseService {
     constructor() {
@@ -19,14 +18,14 @@ class AuthService extends BaseService {
                 });
                 profileData.photo = result.secure_url; // Stocker l'URL de la photo dans le profil
             }
-    
+
             // Initialiser profile avec des valeurs par défaut correctes
             const utilisateurData = {
                 profile: {
                     ...profileData,
                 }
             };
-    
+
             const utilisateur = new this.model(utilisateurData);
             await utilisateur.save();
             return utilisateur;  // Assurez-vous de retourner l'utilisateur sauvegardé

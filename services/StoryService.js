@@ -1,7 +1,8 @@
 import BaseService from './BaseService.js';
 import Story from '../models/Story.js';
 import Discussions from '../models/Discussions.js';
-import cloudinary from '../config/cloudinary.js';
+import { cloudinary } from '../config/cloudinary.js';
+
 
 class StoryService extends BaseService {
     constructor() {

@@ -1,7 +1,8 @@
 import BaseService from './BaseService.js';
 import Post from '../models/Post.js';
 import Utilisateur from '../models/Utilisateur.js';
-import cloudinary from '../config/cloudinary.js';
+import { cloudinary } from '../config/cloudinary.js';
+
 
 class PostService extends BaseService {
     constructor() {
