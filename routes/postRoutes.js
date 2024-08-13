@@ -5,6 +5,9 @@ import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 import ValidationMiddleware from "../middlewares/ValidationMiddleware.js";
 import multer from 'multer';
 
+// Importation correcte de cloudinary
+import { cloudinary } from '../config/cloudinary.js';
+
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
