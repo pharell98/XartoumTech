@@ -3,13 +3,9 @@ import PostController from "../controllers/PostController.js";
 import { postValidationRules, postUpdateValidationRules, commentValidationRules } from "../utils/validators.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 import ValidationMiddleware from "../middlewares/ValidationMiddleware.js";
-import multer from 'multer';
-
-// Importation correcte de cloudinary
-import { cloudinary } from '../config/cloudinary.js';
+import { upload } from '../config/cloudinary.js';  // Utilisation de Cloudinary pour multer
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
 
 router.get("/", AuthMiddleware.verify, PostController.findAll.bind(PostController));
 router.get("/:id", AuthMiddleware.verify, PostController.getById.bind(PostController));
@@ -17,7 +13,7 @@ router.post("/", AuthMiddleware.verify, upload.single('file'), postValidationRul
 router.put("/:id", AuthMiddleware.verify, postUpdateValidationRules(), ValidationMiddleware.validate, PostController.update.bind(PostController));
 router.delete("/:id", AuthMiddleware.verify, PostController.delete.bind(PostController));
 router.post("/:id/comment", AuthMiddleware.verify, commentValidationRules(), ValidationMiddleware.validate, PostController.addComment.bind(PostController));
-router.put("/:id/comment/:commentId", AuthMiddleware.verify, commentValidationRules(), ValidationMiddleware.validate, PostController.updateComment.bind(PostController)); // Ajout de la route pour la mise à jour des commentaires
+router.put("/:id/comment/:commentId", AuthMiddleware.verify, commentValidationRules(), ValidationMiddleware.validate, PostController.updateComment.bind(PostController));
 router.delete("/:id/comment/:commentId", AuthMiddleware.verify, PostController.removeComment.bind(PostController));
 router.post("/:id/like", AuthMiddleware.verify, ValidationMiddleware.validate, PostController.likePost.bind(PostController));
 router.delete("/:id/like", AuthMiddleware.verify, ValidationMiddleware.validate, PostController.removeLike.bind(PostController));
